@@ -217,3 +217,106 @@ class TestAnimal:
     def test_favourite_food(self, cls, food):
         assert cls().favourite_food() == food
 ```
+
+---
+
+# Fixture availability
+
+- In pytest, fixtures can be shared between files by putting them in `conftest.py`.
+- The fixtures in `conftest.py` are available to *all* tests in the folder and all subfolders
+
+<v-click>
+
+```python
+# tests/animals/test_cat.py
+
+def test_cat(cat):
+    pass
+```
+
+</v-click>
+
+<v-click>
+
+```text {0|5|4|2} {lineNumbers: false}
+tests/
+  conftest.py    priority 2
+  animals/       
+    conftest.py  priority 1
+    test_cat.py  priority 0
+```
+
+</v-click>
+
+---
+
+# Fixture availability
+
+```python
+# tests/animals/test_cat.py
+
+class TestCat:
+    def test_cat(self, cat):
+        pass
+```
+
+<v-click>
+
+```text {0|6|5|4|2} {lineNumbers: false}
+tests/
+  conftest.py    priority 3
+  animals/       
+    conftest.py  priority 2
+    test_cat.py  priority 1
+        TestCat  priority 0
+```
+
+</v-click>
+
+---
+
+# Class inheritance
+
+```python
+# tests/animals/test_cat.py
+from .base import BaseCatTest
+
+class TestCat(BaseCatTest):
+    def test_cat(self, cat):
+        pass
+```
+
+<v-click>
+
+```text {0|8|6|7|4|2} {lineNumbers: false}
+tests/
+  conftest.py        priority 4
+  animals/       
+    conftest.py      priority 3
+    base_cat.py  
+        BaseCatTest  priority 1
+    test_cat.py      priority 2
+        TestCat      priority 0
+```
+
+</v-click>
+
+---
+
+# Namespace cleanliness
+
+11000 tests in 700 files in 170 folders, total of 4300 unique fixtures
+
+- Function-based tests: **must** rely on folders and conftest.py to organise and share fixtures
+  - implicit
+  - requires strict discipline
+  - big potential for name clashes
+
+<v-click>
+
+- Class-based tests: **can** rely on inheritance to organise and share fixtures
+  - explicit
+  - doesn't require as strict of a discipline
+  - smaller potential for name clashes
+
+</v-click>
