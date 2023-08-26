@@ -1,5 +1,7 @@
 yarn-error.log
 node_modules
 .idea
-talk.html
 dist/
+venv
+__pycache__
+
