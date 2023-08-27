@@ -101,7 +101,7 @@ def test_cat_meows(cat):
 
 ---
 
-# So - classes you say?
+# Classes you say?
 
 ```python
 class TestCat:
@@ -142,9 +142,15 @@ pytest tests/test_cat.py::TestCat::test_meows
         specific folder                   
 ```
 
----
+<v-click>
 
-<!-- _lineNumbers: true -->
+### Search
+
+With classes, one can now also search by class name (`-k`)
+
+</v-click>
+
+---
 
 # Compactness 1 
 
@@ -184,6 +190,7 @@ class TestCat:
 @pytest.mark.parametrize("cls,sound", [
     pytest.param(Cat, "moew", id="Cat"), 
     pytest.param(Dog, "haf", id="Dog"),
+    pytest.param(Dolphin, "eEeEeEeEeEe", id="Dolphin"),
 ])
 def test_animal_sound(cls, sound):
     assert cls().make_sound() == sound
@@ -192,6 +199,7 @@ def test_animal_sound(cls, sound):
 @pytest.mark.parametrize("cls,food", [
     pytest.param(Cat, Food.FISH, id="Cat"), 
     pytest.param(Dog, Food.BONE, id="Dog"),
+    pytest.param(Dolphin, Food.FISH, id="Dolphin"),
 ])
 def test_animal_favourite_food(cls, food):
     assert cls().favourite_food() == food
@@ -205,6 +213,7 @@ def test_animal_favourite_food(cls, food):
 @pytest.mark.parametrize("cls,sound,food", [
     pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
+    pytest.param(Dolphin, "eEeEeEeEeEe", Food.FISH, id="Dolphin"),
 ])
 class TestAnimal:
     @pytest.fixture
@@ -217,6 +226,13 @@ class TestAnimal:
     def test_favourite_food(self, animal, food):
         assert animal.favourite_food() == food
 ```
+
+---
+
+# So why do I think classes are better for tests?
+
+- Enhanced targetting and search
+- Smaller code footprint
 
 ---
 
@@ -238,12 +254,13 @@ def test_cat(cat):
 
 <v-click>
 
-```text {0|5|4|2} {lineNumbers: false}
+```text {0|5|4|2|6} {lineNumbers: false}
 tests/
   conftest.py    priority 2
   animals/       
     conftest.py  priority 1
     test_cat.py  priority 0
+conftest.py      priority 3
 ```
 
 </v-click>
@@ -262,13 +279,14 @@ class TestCat:
 
 <v-click>
 
-```text {0|6|5|4|2} {lineNumbers: false}
+```text {0|6|5|4|2|7} {lineNumbers: false}
 tests/
   conftest.py    priority 3
   animals/       
     conftest.py  priority 2
     test_cat.py  priority 1
         TestCat  priority 0
+conftest.py      priority 4
 ```
 
 </v-click>
@@ -288,7 +306,7 @@ class TestCat(BaseCatTest):
 
 <v-click>
 
-```text {0|8|6|7|4|2} {lineNumbers: false}
+```text {0|8|6|7|4|2|9} {lineNumbers: false}
 tests/
   conftest.py        priority 4
   animals/       
@@ -297,6 +315,7 @@ tests/
         BaseCatTest  priority 1
     test_cat.py      priority 2
         TestCat      priority 0
+conftest.py          priority 5
 ```
 
 </v-click>
@@ -335,7 +354,16 @@ tests/
 
 ---
 
-# Fixtures auto-use
+# So why do I think classes are better for tests?
+
+- Adhanced targetting and search
+- Smaller code footprint
+- Explicit fixture availability
+- Cleaner fixture namespace
+
+---
+
+# Fixture auto-use
 
 - A fixture which gets used automatically or all tests, without getting explicitly requested 
 - If in `conftest.py`, applies to the current folder and subfolders
@@ -363,11 +391,12 @@ def feature_flags(db):
 
 --- 
 
-# Fixtures auto-use
+# Fixture auto-use
 
 - Using auto-used fixtures defined in `conftest.py` 
   - Can lead to slower tests
   - Can lead to unexpected behaviour
+  - Requires strict discipline
 
 <v-clicks>
 
@@ -405,7 +434,7 @@ def test_cat_likes_fish(cat):
 - The *scope* of a fixture can be modified to one of: `function`, `class`, `module`, `package` or `session`
 - In this example, the fixture `cat` will be created just once
 
-```python
+```python {1}
 @pytest.fixture(scope="module")
 def cat() -> Cat:
     return Cat()
@@ -514,4 +543,15 @@ def test_create_cat(api_client):
 - In combination with `autouse=True` classes enhance posibilities of setup for a group of tests 
 
 </v-clicks>
+
+---
+
+# So why do I think classes are better for tests?
+
+- Adhanced targetting and search
+- Smaller code footprint
+- Explicit fixture availability
+- Cleaner fixture namespace
+- Additional fixture scope 
+- Safer auto-use of fixtures
 
