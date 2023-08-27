@@ -201,21 +201,21 @@ def test_animal_favourite_food(cls, food):
 
 # Compactness 2
 
-Becomes
-
-TODO: fix this not actually working as an example because the fixture needs to be used in the other test
-
 ```python
 @pytest.mark.parametrize("cls,sound,food", [
     pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
 ])
 class TestAnimal:
-    def test_sound(self, cls, sound):
-        assert cls().make_sound() == sound
+    @pytest.fixture
+    def animal(self, cls) -> Animal:
+        return cls()
   
-    def test_favourite_food(self, cls, food):
-        assert cls().favourite_food() == food
+    def test_sound(self, animal, sound):
+        assert animal.make_sound() == sound
+  
+    def test_favourite_food(self, animal, food):
+        assert animal.favourite_food() == food
 ```
 
 ---
@@ -223,7 +223,7 @@ class TestAnimal:
 # Fixture availability
 
 - In pytest, fixtures can be shared between files by putting them in `conftest.py`.
-- The fixtures in `conftest.py` are available to *all* tests in the folder and all subfolders
+- The fixtures in `conftest.py` are available to **all** tests in the folder and all subfolders
 
 <v-click>
 
@@ -279,7 +279,7 @@ tests/
 
 ```python
 # tests/animals/test_cat.py
-from .base import BaseCatTest
+from .base_cat import BaseCatTest
 
 class TestCat(BaseCatTest):
     def test_cat(self, cat):
@@ -305,12 +305,18 @@ tests/
 
 # Namespace cleanliness
 
-11000 tests in 700 files in 170 folders, total of 4300 unique fixtures
-
 - Function-based tests: **must** rely on folders and conftest.py to organise and share fixtures
   - implicit
   - requires strict discipline
   - big potential for name clashes
+
+<v-click>
+
+- At Xelix, in the primary repository we have
+  - 11000 tests in 700 files in 170 folders
+  - 4300 unique fixtures
+
+</v-click>
 
 <v-click>
 
@@ -320,3 +326,192 @@ tests/
   - smaller potential for name clashes
 
 </v-click>
+
+<v-click>
+
+- *Explicit is better than implicit*
+
+</v-click>
+
+---
+
+# Fixtures auto-use
+
+- A fixture which gets used automatically or all tests, without getting explicitly requested 
+- If in `conftest.py`, applies to the current folder and subfolders
+
+```python
+@pytest.fixture(autouse=True)
+def feature_flags(db):
+    FeatureFlags.objects.update_or_create(defaults={"use_feature_a": True})
+```
+
+<v-click>
+
+### Fixture in class
+
+- Applies to current class and all children
+
+```python
+   class TestA:
+       @pytest.fixture(autouse=True)
+       def feature_flags(self, db):
+           FeatureFlags.objects.update_or_create(defaults={"use_feature_a": True})
+```
+
+</v-click>
+
+--- 
+
+# Fixtures auto-use
+
+- Using auto-used fixtures defined in `conftest.py` 
+  - Can lead to slower tests
+  - Can lead to unexpected behaviour
+
+<v-clicks>
+
+- In classes, auto-used fixtures are limited to a set of tests
+  - Safer to use
+  - Again, more explicit
+
+</v-clicks>
+
+--- 
+
+# Fixture scope
+
+- By default, fixtures get created for each test that uses it
+- In this example, the fixture `cat` will be created twice
+
+```python
+@pytest.fixture
+def cat() -> Cat:
+    return Cat()
+
+
+def test_cat_meows(cat):
+    assert cat.make_sound() == "meow"
+
+    
+def test_cat_likes_fish(cat):
+    assert cat.favourite_food() == Food.FISH
+```
+
+---
+
+# Fixture scope
+
+- The *scope* of a fixture can be modified to one of: `function`, `class`, `module`, `package` or `session`
+- In this example, the fixture `cat` will be created just once
+
+```python
+@pytest.fixture(scope="module")
+def cat() -> Cat:
+    return Cat()
+
+
+def test_cat_meows(cat):
+    assert cat.make_sound() == "meow"
+
+
+def test_cat_likes_fish(cat):
+    assert cat.favourite_food() == Food.FISH
+```
+
+--- 
+
+# Fixture scope
+
+- This works in classes as well
+
+```python
+class TestCat:
+    @pytest.fixture(scope="class")
+    def cat(self) -> Cat:
+        return Cat()
+
+    def test_cat_meows(self, cat):
+        assert cat.make_sound() == "meow"
+
+    def test_cat_likes_fish(self, cat):
+        assert cat.favourite_food() == Food.FISH
+```
+
+--- 
+
+# Fixture scope
+
+<v-clicks>
+
+- Primary benefit of appropriate scope is speed
+- The slower a fixture is and the more tests use it, the bigger the benefit
+- Once created, fixture remains active until all tests in scope finish
+  - Can lead to unexpected behaviour, if the fixture has a side-effect (like DB insert)
+
+</v-clicks>
+
+---
+
+# Fixture scope
+
+```python
+@pytest.fixture
+def cat():
+    return Cat.objects.create()  # insert into DB
+
+
+def test_get_cat(cat, api_client):
+    response = api_client.get("/cat/")
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["id"] == cat.id
+
+    
+def test_create_cat(api_client):
+    response = api_client.post("/cat/", {"name": "Micka"})
+    assert response.status_code == 201
+    assert Cat.objects.get().name == "Micka"
+```
+
+---
+
+# Fixture scope
+
+```python {1,16-17}
+@pytest.fixture(scope="module")
+def cat():
+    return Cat.objects.create()  # insert into DB
+
+
+def test_get_cat(cat, api_client):
+    response = api_client.get("/cat/")
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["id"] == cat.id
+
+
+def test_create_cat(api_client):
+    response = api_client.post("/cat/", {"name": "Micka"})
+    assert response.status_code == 201
+    # this will no longer work, becaue `cat` fixture scope is still active
+    assert Cat.objects.get().name == "Micka"
+```
+
+---
+
+# Fixture scope
+
+- Primary benefit of appropriate scope is speed
+- The slower a fixture is and the more tests use it, the bigger the benefit
+- Once created, fixture remains active until all tests in scope finish
+  - Can lead to unexpected behaviour, if the fixture has a side-effect (like DB insert)
+  - Especiall problematic with `autouse=True`
+
+<v-clicks>
+
+- Using classes enables using `class`-scoped fixtures, where tests in scope are limited
+- In combination with `autouse=True` classes enhance posibilities of setup for a group of tests 
+
+</v-clicks>
+

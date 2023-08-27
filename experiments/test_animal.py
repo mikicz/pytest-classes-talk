@@ -62,8 +62,12 @@ def test_animal_favourite_food(cls, food):
     ],
 )
 class TestAnimal:
-    def test_sound(self, cls, sound):
-        assert cls().make_sound() == sound
+    @pytest.fixture
+    def animal(self, cls) -> Animal:
+        return cls()
 
-    def test_favourite_food(self, cls, food):
-        assert cls().favourite_food() == food
+    def test_sound(self, animal, sound, food):
+        assert animal.make_sound() == sound
+
+    def test_favourite_food(self, animal, food, sound):
+        assert animal.favourite_food() == food
