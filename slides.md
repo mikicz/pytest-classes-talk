@@ -555,3 +555,207 @@ def test_create_cat(api_client):
 - Additional fixture scope 
 - Safer auto-use of fixtures
 
+--- 
+
+# Parametrizing test classes
+
+```python
+@pytest.mark.parametrize("cls,sound,food", [
+    pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Dog, "haf", Food.BONE, id="Dog"),
+])
+class TestAnimal:
+    @pytest.fixture
+    def animal(self, cls) -> Animal:
+        return cls()
+  
+    def test_sound(self, animal, sound):
+        assert animal.make_sound() == sound
+  
+    def test_favourite_food(self, animal, food):
+        assert animal.favourite_food() == food
+```
+
+<v-click>
+
+```text
+ERROR test_animal.py::TestAnimal - Failed: In test_sound: function uses no argument 'food'
+```
+
+</v-click>
+
+--- 
+
+# Parametrizing test classes
+
+```python {13,10|all}
+@pytest.mark.parametrize("cls,sound,food", [
+    pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Dog, "haf", Food.BONE, id="Dog"),
+])
+class TestAnimal:
+    @pytest.fixture
+    def animal(self, cls) -> Animal:
+        return cls()
+  
+    def test_sound(self, animal, sound, food):
+        assert animal.make_sound() == sound
+  
+    def test_favourite_food(self, animal, food, sound):
+        assert animal.favourite_food() == food
+```
+
+<v-click>
+
+- With each additional parameter and test this gets more and more annoying
+
+</v-click>
+
+---
+
+# Parametrizing test classes
+
+- What if the `Animal` initialisation is more complicated?
+
+<v-click>
+
+```python
+@pytest.mark.parametrize("cls,animal_kwargs,sound,food", [
+    pytest.param(Cat, {"name": "Micka"}, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Dog, {"name": "Bud", "breed": Breeds.LABRADOR}, "haf", Food.BONE, id="Dog"),
+])
+class TestAnimal:
+    @pytest.fixture
+    def animal(self, cls, animal_kwargs) -> Animal:
+        return cls(**animal_kwargs)
+  
+    ...
+```
+
+</v-click>
+
+---
+
+# Parametrizing test classes
+
+- What if passing static values isn't enough?
+
+<v-click>
+
+```python
+@pytest.fixture()
+def cat() -> Cat:
+    return Cat(name="Micka")
+
+@pytest.fixture()
+def dog() -> Dog:
+    dog = Dog(name="Bud", breed=Breeds.LABRADOR)
+    dog.teach_trick(Tricks.SHAKE_PAW)
+    return dog
+
+@pytest.mark.parametrize("animal,sound,food,can_do_tricks", [
+    # https://pypi.org/project/pytest-lazy-fixture/
+    pytest.param(pytest.lazy_fixture("cat"), "moew", False, Food.FISH, id="Cat"),
+    pytest.param(pytest.lazy_fixture("dog"), "haf", True, Food.BONE, id="Dog"),
+])
+class TestAnimal:
+    def can_do_tricks(self, animal, food, sound, can_do_tricks):
+        assert animal.can_do_tricks() == can_do_tricks
+```
+
+</v-click>
+
+---
+
+# Abstraction as a mean of parametrisation
+
+- We can use class inheritance to parametrize tests
+
+<v-click>
+
+```python {all|1|2-4|6-8|10-18}
+class BaseAnimalTest:
+    ANIMAL_SOUND = None
+    FAVOURITE_FOOD = None
+    CAN_DO_TRICKS = False
+    
+    @pytest.fixture(scope="class")
+    def animal(self) -> Animal:
+        raise NotImplementedError() 
+    
+    def test_sound(self, animal):
+        assert animal.make_sound() == self.ANIMAL_SOUND
+  
+    def test_favourite_food(self, animal):
+        assert animal.favourite_food() == self.FAVOURITE_FOOD
+
+    def can_do_tricks(self, animal):
+        assert animal.can_do_tricks() == self.CAN_DO_TRICKS
+```
+
+</v-click>
+
+---
+
+# Abstraction as a mean of parametrisation
+
+```python {all|1,6|2-4|7-11|13-14}
+class TestCat(BaseAnimalTest):
+    @pytest.fixture()
+    def animal(self) -> Cat:
+        return Cat(name="Micka")
+    
+class TestDog(BaseAnimalTest):
+    @pytest.fixture()
+    def animal(self) -> Dog:
+        dog = Dog(name="Bud", breed=Breeds.LABRADOR)
+        dog.teach_trick(Tricks.SHAKE_PAW)
+        return dog
+
+    def test_zoomies(self, animal):
+        animal.zoom_around()
+```
+
+---
+
+# Abstraction as a mean of parametrisation
+
+- Alternative method of parametrisation
+
+<v-clicks>
+
+- Suitable for a large number of parameters
+- Suitable for when the parameters involve code rather than values
+
+</v-clicks>
+
+<v-click>
+
+### Example from Xelix
+
+</v-click>
+
+<v-clicks>
+
+- Can add comments to 8 classes of objects
+  - Models and views essentially identically except for different foreign keys
+- One base test class
+  - 12 tests (list, create, validation, permissions, etc.)
+  - 3 fixtures that need implementing (creating objects to comment on)
+  - 5 parameters with default values shared by most classes (number of queries on operation, etc.)
+  - 4 other parameters (class of object, foreign key name, urls, etc.) 
+
+</v-clicks>
+
+
+---
+
+# So why do I think classes are better for tests?
+
+- Adhanced targetting and search
+- Smaller code footprint
+- Explicit fixture availability
+- Cleaner fixture namespace
+- Additional fixture scope 
+- Safer auto-use of fixtures
+- Alternative parametrisation of tests

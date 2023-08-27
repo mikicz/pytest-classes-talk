@@ -66,8 +66,8 @@ class TestAnimal:
     def animal(self, cls) -> Animal:
         return cls()
 
-    def test_sound(self, animal, sound, food):
+    def test_sound(self, animal, sound):
         assert animal.make_sound() == sound
 
-    def test_favourite_food(self, animal, food, sound):
+    def test_favourite_food(self, animal, food):
         assert animal.favourite_food() == food
