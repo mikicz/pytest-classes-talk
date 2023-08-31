@@ -486,7 +486,7 @@ class TestCat:
 
 ```python
 @pytest.fixture
-def cat():
+def cat(db):
     return Cat.objects.create()  # insert into DB
 
 
@@ -509,7 +509,7 @@ def test_create_cat(api_client):
 
 ```python {1,16-17}
 @pytest.fixture(scope="module")
-def cat():
+def cat(db):
     return Cat.objects.create()  # insert into DB
 
 
@@ -737,7 +737,7 @@ class TestDog(BaseAnimalTest):
 
 <v-clicks>
 
-- Can add comments to 8 classes of objects
+- Comment functionality on 8 classes of objects
   - Models and views essentially identically except for different foreign keys
 - One base test class
   - 12 tests (list, create, validation, permissions, etc.)
