@@ -1,17 +1,4 @@
 ---
-footer: 'PyCon CZ, Xth of September 2023'
-style: |
-    section.intro h1 {
-        font-size: 60px;
-    }
-    section.intro h3 {
-        font-size: 50px;
-        text-align: right;
-        padding-right: 55px;
-    }
-    footer {
-        text-align: right;
-    }
 lineNumbers: true
 download: true
 theme: dracula
@@ -20,7 +7,9 @@ theme: dracula
 <!-- _class: intro -->
 
 # **Pytest: The Case for Using Classes**
+
 ### a talk by Mikuláš Poul
+### September 16, 2023 - PyCon CZ
 
 ---
 
@@ -387,7 +376,7 @@ def feature_flags(db):
 
 </v-click>
 
---- 
+---
 
 # Fixture auto-use
 
@@ -404,7 +393,7 @@ def feature_flags(db):
 
 </v-clicks>
 
---- 
+---
 
 # Fixture scope
 
@@ -446,7 +435,7 @@ def test_cat_likes_fish(cat):
     assert cat.favourite_food() == Food.FISH
 ```
 
---- 
+---
 
 # Fixture scope
 
@@ -465,7 +454,7 @@ class TestCat:
         assert cat.favourite_food() == Food.FISH
 ```
 
---- 
+---
 
 # Fixture scope
 
@@ -553,7 +542,7 @@ def test_create_cat(api_client):
 - Additional fixture scope 
 - Safer auto-use of fixtures
 
---- 
+---
 
 # Parametrizing test classes
 
@@ -582,7 +571,7 @@ ERROR test_animal.py::TestAnimal - Failed: In test_sound: function uses no argum
 
 </v-click>
 
---- 
+---
 
 # Parametrizing test classes
 
