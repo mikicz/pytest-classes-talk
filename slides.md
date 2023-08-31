@@ -13,16 +13,14 @@ style: |
         text-align: right;
     }
 lineNumbers: true
+download: true
+theme: dracula
 ---
 
 <!-- _class: intro -->
 
 # **Pytest: The Case for Using Classes**
 ### a talk by Mikuláš Poul
-
-<!--
-Example speaker note
--->
 
 ---
 
@@ -759,3 +757,7 @@ class TestDog(BaseAnimalTest):
 - Additional fixture scope 
 - Safer auto-use of fixtures
 - Alternative parametrisation of tests
+
+---
+
+# Conclusion

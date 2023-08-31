@@ -719,22 +719,22 @@
     "@slidev/types" "0.42.11"
     js-yaml "^4.1.0"
 
-"@slidev/theme-default@^0.21.2":
-  version "0.21.2"
-  resolved "https://registry.yarnpkg.com/@slidev/theme-default/-/theme-default-0.21.2.tgz#28db9f074cd0b17d19ca6ccd1d4c75db7a24b026"
-  integrity sha512-neUucFs2YrRZZd73QwvLTyRG/o1nerDFUR5t8YAmXVLTMzWfY71flQ6aAhjYf+WjsozYsOHcxi/pZtIzZ4VhTQ==
+"@slidev/theme-bricks@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@slidev/theme-bricks/-/theme-bricks-0.0.2.tgz#4045f6a94a6232cd1b8f5ecdfc77e09f81d9d537"
+  integrity sha512-70mc2kdWuo6ZoMJiEdWScs8Ei4bRfoEGDibVQFiHqbdFd2oWmmCyfWOVwc2j6HAiECENXrsmKJfN8Tc0S4kxTQ==
   dependencies:
-    "@slidev/types" "^0.22.7"
+    "@slidev/types" "^0.22.1"
     codemirror-theme-vars "^0.1.1"
     prism-theme-vars "^0.2.2"
     theme-vitesse "^0.1.12"
 
-"@slidev/types@0.42.11":
+"@slidev/types@0.42.11", "@slidev/types@^0.42.5":
   version "0.42.11"
   resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.42.11.tgz#a9c806aa3a15df615f8439052efb89e510664576"
   integrity sha512-K7+UWzEQpUe3eEFs7ktm3tw17Ke9ZOJPTy7yGSlZfWl4jCTf9Z0HNKECPLQ3JGL6EkJ4Wyy1y0HE92/20cTn0Q==
 
-"@slidev/types@^0.22.7":
+"@slidev/types@^0.22.1":
   version "0.22.7"
   resolved "https://registry.yarnpkg.com/@slidev/types/-/types-0.22.7.tgz#abe1c81fedd5db1475428832f65253f95722a6d8"
   integrity sha512-mCVKQbcGTv6d6n9aHpYNp5U04HF+FMbpY083vqpJ6Folc805BB1Am02eubaW0J6nM+dSOu2dDgPY+kIjs75sAQ==
@@ -1496,7 +1496,7 @@ cliui@^8.0.1:
     strip-ansi "^6.0.1"
     wrap-ansi "^7.0.0"
 
-codemirror-theme-vars@^0.1.1:
+codemirror-theme-vars@^0.1.1, codemirror-theme-vars@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/codemirror-theme-vars/-/codemirror-theme-vars-0.1.2.tgz#60db6877d16a400809e919b9bec33d72dbab1dfa"
   integrity sha512-WTau8X2q58b0SOAY9DO+iQVw8JKVEgyQIqArp2D732tcc+pobbMta3bnVMdQdmgwuvNrOFFr6HoxPRoQOgooFA==
@@ -3433,7 +3433,7 @@ prettier@^3.0.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.3.tgz#432a51f7ba422d1469096c0fdc28e235db8f9643"
   integrity sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==
 
-prism-theme-vars@^0.2.2:
+prism-theme-vars@^0.2.2, prism-theme-vars@^0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/prism-theme-vars/-/prism-theme-vars-0.2.4.tgz#c92b8747a70ced8675538454900f88f08d053558"
   integrity sha512-B3Pht+GCT87sZph7hMRLlCQXzCM0awW7Rhk08RavpqRW4LEQOeqN0uMG4QCWkul2tr8PB61YAOJGUrEW+1uuJA==
@@ -3655,6 +3655,16 @@ slash@^4.0.0:
   resolved "https://registry.yarnpkg.com/slash/-/slash-4.0.0.tgz#2422372176c4c6c5addb5e2ada885af984b396a7"
   integrity sha512-3dOsAHXXUkQTpOYcoAxLIorMTp4gIQr5IW3iVb7A7lFIp0VHhnynm9izx6TssdrIcVIESAlVjtnO2K8bg+Coew==
 
+slidev-theme-dracula@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/slidev-theme-dracula/-/slidev-theme-dracula-0.2.0.tgz#15802c504e8d7dc58db9d3d80138b39e9595d984"
+  integrity sha512-ndMD27+gUNYt9aXrb4/0vSBHKP007mpD2eCJppzhqXDG1DmN0Q6I6iFz+QvIjOPDKzzPjoYZbsWp6lPLJjgs9g==
+  dependencies:
+    "@slidev/types" "^0.42.5"
+    codemirror-theme-vars "^0.1.2"
+    prism-theme-vars "^0.2.4"
+    theme-vitesse "^0.7.2"
+
 source-map-js@^1.0.1, source-map-js@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
@@ -3771,6 +3781,11 @@ theme-vitesse@^0.1.12:
   version "0.1.14"
   resolved "https://registry.yarnpkg.com/theme-vitesse/-/theme-vitesse-0.1.14.tgz#e239d44fb0e61b3d0471fc86784b22e8b632dc96"
   integrity sha512-b5s+Zpfaw5+djoCJ9AEbcTbpiTlLsOvGM9oblDmmWRGWNqg9oXtEYO/uwubwx77novHBI6zNuwZRHKNlAIBo4A==
+
+theme-vitesse@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/theme-vitesse/-/theme-vitesse-0.7.2.tgz#a1de4f4e1f4d19de0ea6a27e622ab2e99735a3cf"
+  integrity sha512-e214q5dCGCkjORY0el6lz+JEmZIR1HQOnGhKehMYh0jJaZgqbPKbwHIULsBvQsUM4Q+ZX0AzBgKbUU2UksYOCg==
 
 titleize@^3.0.0:
   version "3.0.0"
