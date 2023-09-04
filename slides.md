@@ -22,14 +22,15 @@ theme: dracula
 <v-clicks>
 
 - Have been coding in Python for 10 years
-- Have been using Pytest for last X years  # TODO: find
-- Staff Engineer at Xelix # TODO: link, logo
-- www.mikulaspoul.cz  # TODO: link
+- Have been using Pytest for last 8 years
+- Staff Engineer at [<img src="/xelix.svg" style="display: inline; height: 25px; margin-top: -10px" />](https://xelix.com/)
+- [www.mikulaspoul.cz](https://www.mikulaspoul.cz/)
 
 </v-clicks>
 
 <!--
-Mention all links are on mikulaspoul, plus a blog
+Still a little bit in the imposter syndrome phase of being a staff engineer
+Mention all links & relevant details are on mikulaspoul, plus a blog and link to this talk
 -->
 
 ---
@@ -54,10 +55,6 @@ def test_cat():
 
 - Fixtures - reusable test setup
 
-<!--
-First ask who writes tests, who uses pytest, and who uses classes?
--->
-
 ```python
 @pytest.fixture
 def cat() -> Cat:
@@ -70,6 +67,10 @@ def test_cat_meows(cat):
 
 </v-click>
 
+<!--
+First ask who writes tests, who uses pytest, and who uses classes?
+-->
+
 ---
 
 # Why care how tests are written?
@@ -79,10 +80,10 @@ def test_cat_meows(cat):
 - Writing tests takes up a big part of coding time
 - Maintainability of tests equals maintainability of entire codebase
   - Tests usually compose a big part of codebase
-  - At Xelix, in the primary repository tests take up ~1/3 of files and ~1/2 lines of code
+  - At Xelix, in the primary repo tests take up ~1/3 of files and ~1/2 lines of code
 - At scale
   - Running tests can take a long time
-  - TODO: somehow say reusability is important
+  - Reusing parts of tests can speed up development 
 
 </v-clicks>
 
@@ -177,7 +178,6 @@ class TestCat:
 @pytest.mark.parametrize("cls,sound", [
     pytest.param(Cat, "moew", id="Cat"), 
     pytest.param(Dog, "haf", id="Dog"),
-    pytest.param(Dolphin, "eEeEeEeEeEe", id="Dolphin"),
 ])
 def test_animal_sound(cls, sound):
     assert cls().make_sound() == sound
@@ -186,7 +186,6 @@ def test_animal_sound(cls, sound):
 @pytest.mark.parametrize("cls,food", [
     pytest.param(Cat, Food.FISH, id="Cat"), 
     pytest.param(Dog, Food.BONE, id="Dog"),
-    pytest.param(Dolphin, Food.FISH, id="Dolphin"),
 ])
 def test_animal_favourite_food(cls, food):
     assert cls().favourite_food() == food
@@ -200,7 +199,6 @@ def test_animal_favourite_food(cls, food):
 @pytest.mark.parametrize("cls,sound,food", [
     pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
-    pytest.param(Dolphin, "eEeEeEeEeEe", Food.FISH, id="Dolphin"),
 ])
 class TestAnimal:
     @pytest.fixture
@@ -226,7 +224,7 @@ class TestAnimal:
 # Fixture availability
 
 - In pytest, fixtures can be shared between files by putting them in `conftest.py`.
-- The fixtures in `conftest.py` are available to **all** tests in the folder and all subfolders
+- Fixtures in `conftest.py` are available to **all** tests in the folder and all subfolders
 
 <v-click>
 
@@ -243,11 +241,11 @@ def test_cat(cat):
 
 ```text {0|5|4|2|6} {lineNumbers: false}
 tests/
-  conftest.py    priority 2
+  conftest.py           priority 2
   animals/       
-    conftest.py  priority 1
-    test_cat.py  priority 0
-conftest.py      priority 3
+    conftest.py         priority 1
+    test_cat.py         priority 0
+conftest.py             priority 3
 ```
 
 </v-click>
@@ -268,12 +266,12 @@ class TestCat:
 
 ```text {0|6|5|4|2|7} {lineNumbers: false}
 tests/
-  conftest.py    priority 3
+  conftest.py           priority 3
   animals/       
-    conftest.py  priority 2
-    test_cat.py  priority 1
-        TestCat  priority 0
-conftest.py      priority 4
+    conftest.py         priority 2
+    test_cat.py         priority 1
+        TestCat         priority 0
+conftest.py             priority 4
 ```
 
 </v-click>
@@ -295,14 +293,14 @@ class TestCat(BaseCatTest):
 
 ```text {0|8|6|7|4|2|9} {lineNumbers: false}
 tests/
-  conftest.py        priority 4
+  conftest.py               priority 4
   animals/       
-    conftest.py      priority 3
+    conftest.py             priority 3
     base_cat.py  
-        BaseCatTest  priority 1
-    test_cat.py      priority 2
-        TestCat      priority 0
-conftest.py          priority 5
+        BaseCatTest         priority 1
+    test_cat.py             priority 2
+        TestCat             priority 0
+conftest.py                 priority 5
 ```
 
 </v-click>
@@ -311,10 +309,17 @@ conftest.py          priority 5
 
 # Namespace cleanliness
 
-- Function-based tests: **must** rely on folders and conftest.py to organise and share fixtures
+- Function-based tests: **must** rely on folders and conftest.py to share fixtures
   - implicit
-  - requires strict discipline
   - big potential for name clashes
+
+<v-click>
+
+- Class-based tests: **can** rely on inheritance to organise and share fixtures
+  - explicit
+  - smaller potential for name clashes
+
+</v-click>
 
 <v-click>
 
@@ -326,18 +331,14 @@ conftest.py          priority 5
 
 <v-click>
 
-- Class-based tests: **can** rely on inheritance to organise and share fixtures
-  - explicit
-  - doesn't require as strict of a discipline
-  - smaller potential for name clashes
-
-</v-click>
-
-<v-click>
-
 - *Explicit is better than implicit*
 
 </v-click>
+
+<!--
+Function-based tests require a lot of discipline to share fixtures well.
+With classes, as long as you don't just put all your fixtures in the same base classes, less discipline is needed.
+-->
 
 ---
 
@@ -352,7 +353,7 @@ conftest.py          priority 5
 
 # Fixture auto-use
 
-- A fixture which gets used automatically or all tests, without getting explicitly requested 
+- A fixture which gets used on all tests, without getting explicitly requested 
 - If in `conftest.py`, applies to the current folder and subfolders
 
 ```python
@@ -368,10 +369,12 @@ def feature_flags(db):
 - Applies to current class and all children
 
 ```python
-   class TestA:
-       @pytest.fixture(autouse=True)
-       def feature_flags(self, db):
-           FeatureFlags.objects.update_or_create(defaults={"use_feature_a": True})
+class TestA:
+    @pytest.fixture(autouse=True)
+    def feature_flags(self, db):
+        FeatureFlags.objects.update_or_create(
+            defaults={"use_feature_a": True}
+        )
 ```
 
 </v-click>
@@ -392,6 +395,16 @@ def feature_flags(db):
   - Again, more explicit
 
 </v-clicks>
+
+---
+
+# So why do I think classes are better for tests?
+
+- Adhanced targetting and search
+- Smaller code footprint
+- Explicit fixture availability
+- Cleaner fixture namespace
+- Safer auto-use of fixtures
 
 ---
 
@@ -539,8 +552,8 @@ def test_create_cat(api_client):
 - Smaller code footprint
 - Explicit fixture availability
 - Cleaner fixture namespace
-- Additional fixture scope 
 - Safer auto-use of fixtures
+- Additional fixture scope
 
 ---
 
@@ -566,7 +579,8 @@ class TestAnimal:
 <v-click>
 
 ```text
-ERROR test_animal.py::TestAnimal - Failed: In test_sound: function uses no argument 'food'
+ERROR test_animal.py::TestAnimal - Failed: In test_sound: 
+   function uses no argument 'food'
 ```
 
 </v-click>
@@ -609,7 +623,10 @@ class TestAnimal:
 ```python
 @pytest.mark.parametrize("cls,animal_kwargs,sound,food", [
     pytest.param(Cat, {"name": "Micka"}, "moew", Food.FISH, id="Cat"), 
-    pytest.param(Dog, {"name": "Bud", "breed": Breeds.LABRADOR}, "haf", Food.BONE, id="Dog"),
+    pytest.param(
+        Dog, {"name": "Bud", "breed": Breeds.LABRADOR}, 
+        "haf", Food.BONE, id="Dog"
+    ),
 ])
 class TestAnimal:
     @pytest.fixture
@@ -729,7 +746,7 @@ class TestDog(BaseAnimalTest):
 - One base test class
   - 12 tests (list, create, validation, permissions, etc.)
   - 3 fixtures that need implementing (creating objects to comment on)
-  - 5 parameters with default values shared by most classes (number of queries on operation, etc.)
+  - 5 parameters with default values (number of queries on operation, etc.)
   - 4 other parameters (class of object, foreign key name, urls, etc.) 
 
 </v-clicks>
@@ -743,8 +760,8 @@ class TestDog(BaseAnimalTest):
 - Smaller code footprint
 - Explicit fixture availability
 - Cleaner fixture namespace
-- Additional fixture scope 
 - Safer auto-use of fixtures
+- Additional fixture scope
 - Alternative parametrisation of tests
 
 ---

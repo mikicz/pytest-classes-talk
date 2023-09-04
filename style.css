@@ -1,3 +1,28 @@
 #app .slidev-layout.cover h1, #app .slidev-layout.intro h1 {
   font-size: 50px;
 }
+
+#app .slidev-layout.cover h3, #app .slidev-layout.intro h3 {
+  text-align: right;
+
+}
+
+#app .slidev-layout.cover h3:first-of-type, #app .slidev-layout.intro h3:first-of-type {
+  margin-top: 150px;
+}
+
+#app #slide-content strong {
+  color: var(--foreground);
+}
+
+.slidev-layout {
+  font-size: 1.4rem;
+}
+
+code {
+  font-size: 1.4em
+}
+
+.slidev-layout a {
+  border-bottom: none;
+}
