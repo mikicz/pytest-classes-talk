@@ -223,7 +223,7 @@ class TestAnimal:
 
 # Fixture availability
 
-- In pytest, fixtures can be shared between files by putting them in `conftest.py`.
+- In pytest, fixtures can be shared between files by putting them in `conftest.py`
 - Fixtures in `conftest.py` are available to **all** tests in the folder and all subfolders
 
 <v-click>
@@ -733,11 +733,11 @@ class TestDog(BaseAnimalTest):
 
 </v-clicks>
 
-<v-click>
+---
+
+# Abstraction as a mean of parametrisation
 
 ### Example from Xelix
-
-</v-click>
 
 <v-clicks>
 
@@ -767,3 +767,12 @@ class TestDog(BaseAnimalTest):
 ---
 
 # Conclusion
+
+<v-clicks>
+
+- Consider all options pytest gives you
+- Using _can_ solve certain head-aches when writing classes at scale
+- There are many ways to accomplish the same thing
+- In the end, any tests is better than no tests
+
+</v-clicks>

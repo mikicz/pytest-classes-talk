@@ -11,7 +11,7 @@
   margin-top: 150px;
 }
 
-#app #slide-content strong {
+#app #slide-content strong, #app #slide-content em {
   color: var(--foreground);
 }
 
