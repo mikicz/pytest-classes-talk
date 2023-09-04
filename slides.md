@@ -30,6 +30,7 @@ theme: dracula
 
 <!--
 Still a little bit in the imposter syndrome phase of being a staff engineer
+
 Mention all links & relevant details are on mikulaspoul, plus a blog and link to this talk
 -->
 
@@ -140,7 +141,7 @@ With classes, one can now also search by class name (`-k`)
 
 ---
 
-# Compactness 1 
+# Compactness / Repetitiveness 1
 
 ```python
 @pytest.mark.some_mark
@@ -172,7 +173,7 @@ class TestCat:
 
 ---
 
-# Compactness 2
+# Compactness / Repetitiveness 2
 
 ```python
 @pytest.mark.parametrize("cls,sound", [
@@ -193,7 +194,7 @@ def test_animal_favourite_food(cls, food):
 
 ---
 
-# Compactness 2
+# Compactness / Repetitiveness 2
 
 ```python
 @pytest.mark.parametrize("cls,sound,food", [
@@ -218,6 +219,7 @@ class TestAnimal:
 
 - Enhanced targetting and search
 - Smaller code footprint
+- Reduced repetitions
 
 ---
 
@@ -346,12 +348,13 @@ With classes, as long as you don't just put all your fixtures in the same base c
 
 - Adhanced targetting and search
 - Smaller code footprint
+- Reduced repetitions
 - Explicit fixture availability
 - Cleaner fixture namespace
 
 ---
 
-# Fixture auto-use
+# Auto-used fixtures
 
 - A fixture which gets used on all tests, without getting explicitly requested 
 - If in `conftest.py`, applies to the current folder and subfolders
@@ -366,7 +369,7 @@ def feature_flags(db):
 
 ### Fixture in class
 
-- Applies to current class and all children
+- Applies to current class instance
 
 ```python
 class TestA:
@@ -381,7 +384,7 @@ class TestA:
 
 ---
 
-# Fixture auto-use
+# Auto-used fixtures
 
 - Using auto-used fixtures defined in `conftest.py` 
   - Can lead to slower tests
@@ -402,6 +405,7 @@ class TestA:
 
 - Adhanced targetting and search
 - Smaller code footprint
+- Reduced repetitions
 - Explicit fixture availability
 - Cleaner fixture namespace
 - Safer auto-use of fixtures
@@ -550,6 +554,7 @@ def test_create_cat(api_client):
 
 - Adhanced targetting and search
 - Smaller code footprint
+- Reduced repetitions
 - Explicit fixture availability
 - Cleaner fixture namespace
 - Safer auto-use of fixtures
@@ -758,6 +763,7 @@ class TestDog(BaseAnimalTest):
 
 - Adhanced targetting and search
 - Smaller code footprint
+- Reduced repetitions
 - Explicit fixture availability
 - Cleaner fixture namespace
 - Safer auto-use of fixtures
