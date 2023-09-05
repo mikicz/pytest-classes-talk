@@ -3,9 +3,8 @@ lineNumbers: true
 download: true
 theme: dracula
 highlighter: shiki
+favicon: '/favicon.png'
 ---
-
-<!-- _class: intro -->
 
 # **Pytest: The Case for Using Classes**
 
@@ -833,5 +832,19 @@ class TestDog(BaseAnimalTest):
 </v-clicks>
 
 ---
+layout: statement
+---
 
 # Questions?
+
+---
+layout: center
+class: "text-center"
+---
+
+# Slides
+
+
+<img src="/qr_link.png" style="height: 300px" />
+
+[Web](https://www.mikulaspoul.cz/talks/pytest-classes-talk/) / [Source](https://github.com/mikicz/pytest-classes-talk/)
