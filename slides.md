@@ -2,6 +2,7 @@
 lineNumbers: true
 download: true
 theme: dracula
+highlighter: shiki
 ---
 
 <!-- _class: intro -->
@@ -177,7 +178,7 @@ class TestCat:
 
 ```python
 @pytest.mark.parametrize("cls,sound", [
-    pytest.param(Cat, "moew", id="Cat"), 
+    pytest.param(Cat, "mňau", id="Cat"), 
     pytest.param(Dog, "haf", id="Dog"),
 ])
 def test_animal_sound(cls, sound):
@@ -198,7 +199,7 @@ def test_animal_favourite_food(cls, food):
 
 ```python
 @pytest.mark.parametrize("cls,sound,food", [
-    pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Cat, "mňau", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
 ])
 class TestAnimal:
@@ -600,7 +601,7 @@ class TestCatCreate:
 
 ```python
 @pytest.mark.parametrize("cls,sound,food", [
-    pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Cat, "mňau", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
 ])
 class TestAnimal:
@@ -630,7 +631,7 @@ ERROR test_animal.py::TestAnimal - Failed: In test_sound:
 
 ```python {13,10|all}
 @pytest.mark.parametrize("cls,sound,food", [
-    pytest.param(Cat, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Cat, "mňau", Food.FISH, id="Cat"), 
     pytest.param(Dog, "haf", Food.BONE, id="Dog"),
 ])
 class TestAnimal:
@@ -661,7 +662,7 @@ class TestAnimal:
 
 ```python
 @pytest.mark.parametrize("cls,animal_kwargs,sound,food", [
-    pytest.param(Cat, {"name": "Micka"}, "moew", Food.FISH, id="Cat"), 
+    pytest.param(Cat, {"name": "Micka"}, "mňau", Food.FISH, id="Cat"), 
     pytest.param(
         Dog, {"name": "Max", "breed": Breeds.LABRADOR}, 
         "haf", Food.BONE, id="Dog"
@@ -698,7 +699,7 @@ def dog() -> Dog:
 
 @pytest.mark.parametrize("animal,sound,food,can_do_tricks", [
     # https://pypi.org/project/pytest-lazy-fixture/
-    pytest.param(pytest.lazy_fixture("cat"), "moew", False, Food.FISH, id="Cat"),
+    pytest.param(pytest.lazy_fixture("cat"), "mňau", False, Food.FISH, id="Cat"),
     pytest.param(pytest.lazy_fixture("dog"), "haf", True, Food.BONE, id="Dog"),
 ])
 class TestAnimal:
