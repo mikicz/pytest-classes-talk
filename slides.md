@@ -47,7 +47,7 @@ A beloved testing framework with several massive features
 
 ```python
 def test_cat():
-    assert Cat().make_sound() == "meow"
+    assert Cat().make_sound() == "mňau"
 ```
 
 </v-click>
@@ -63,7 +63,7 @@ def cat() -> Cat:
 
 
 def test_cat_meows(cat):
-    assert cat.make_sound() == "meow
+    assert cat.make_sound() == "mňau"
 ```
 
 </v-click>
@@ -99,7 +99,7 @@ class TestCat:
         return Cat()
     
     def test_meows(self, cat):
-        assert cat.make_sound() == "meow"
+        assert cat.make_sound() == "mňau"
 ```
 
 ---
@@ -146,7 +146,7 @@ With classes, one can now also search by class name (`-k`)
 ```python
 @pytest.mark.some_mark
 def test_cat_meows(cat):
-    assert cat.make_sound() == "meow"
+    assert cat.make_sound() == "mňau"
 
 
 @pytest.mark.some_mark
@@ -163,7 +163,7 @@ class TestCat:
     pytestmark = pytest.mark.some_mark
     
     def test_meows(self, cat):
-        assert cat.make_sound() == "meow"
+        assert cat.make_sound() == "mňau"
     
     def test_likes_fish(self, cat):
         assert cat.favourite_food() == Food.FISH
@@ -424,7 +424,7 @@ def cat() -> Cat:
 
 
 def test_cat_meows(cat):
-    assert cat.make_sound() == "meow"
+    assert cat.make_sound() == "mňau"
 
     
 def test_cat_likes_fish(cat):
@@ -445,7 +445,7 @@ def cat() -> Cat:
 
 
 def test_cat_meows(cat):
-    assert cat.make_sound() == "meow"
+    assert cat.make_sound() == "mňau"
 
 
 def test_cat_likes_fish(cat):
@@ -465,7 +465,7 @@ class TestCat:
         return Cat()
 
     def test_cat_meows(self, cat):
-        assert cat.make_sound() == "meow"
+        assert cat.make_sound() == "mňau"
 
     def test_cat_likes_fish(self, cat):
         assert cat.favourite_food() == Food.FISH
@@ -494,14 +494,14 @@ def cat(db):
     return Cat.objects.create()  # insert into DB
 
 
-def test_get_cat(cat, api_client):
+def test_cat_get_list(db, cat, api_client):
     response = api_client.get("/cat/")
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["id"] == cat.id
 
     
-def test_create_cat(api_client):
+def test_cat_create(db, api_client):
     response = api_client.post("/cat/", {"name": "Micka"})
     assert response.status_code == 201
     assert Cat.objects.get().name == "Micka"
@@ -517,19 +517,28 @@ def cat(db):
     return Cat.objects.create()  # insert into DB
 
 
-def test_get_cat(cat, api_client):
+def test_cat_get_list(db, cat, api_client):
     response = api_client.get("/cat/")
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["id"] == cat.id
 
 
-def test_create_cat(api_client):
+def test_cat_create(db, api_client):
     response = api_client.post("/cat/", {"name": "Micka"})
     assert response.status_code == 201
     # this will no longer work, becaue `cat` fixture scope is still active
     assert Cat.objects.get().name == "Micka"
 ```
+
+<!--
+
+Only happens if both run.
+
+The only solution here, if we want to keep `cat` module-scoped is to move to a separate file, or if the `cat`
+fixture is in conftest.py, move to a different folder entirely. 
+
+-->
 
 ---
 
@@ -547,6 +556,31 @@ def test_create_cat(api_client):
 - In combination with `autouse=True` classes enhance posibilities of setup for a group of tests 
 
 </v-clicks>
+
+---
+
+# Fixture scope
+
+```python
+class TestCatList:
+    @pytest.fixture(scope="class")
+    def cat(self, db):
+        return Cat.objects.create()  # insert into DB
+    
+    def test_get_list(self, cat, api_client):
+        response = api_client.get("/cat/")
+        assert response.status_code == 200
+        assert len(response.json()) == 1
+        assert response.json()[0]["id"] == cat.id
+
+
+class TestCatCreate:
+    def test_create(self, db, api_client):
+        response = api_client.post("/cat/", {"name": "Micka"})
+        assert response.status_code == 201
+        # this will no longer work, becaue `cat` fixture scope is still active
+        assert Cat.objects.get().name == "Micka"
+```
 
 ---
 
@@ -629,7 +663,7 @@ class TestAnimal:
 @pytest.mark.parametrize("cls,animal_kwargs,sound,food", [
     pytest.param(Cat, {"name": "Micka"}, "moew", Food.FISH, id="Cat"), 
     pytest.param(
-        Dog, {"name": "Bud", "breed": Breeds.LABRADOR}, 
+        Dog, {"name": "Max", "breed": Breeds.LABRADOR}, 
         "haf", Food.BONE, id="Dog"
     ),
 ])
@@ -652,13 +686,13 @@ class TestAnimal:
 <v-click>
 
 ```python
-@pytest.fixture()
+@pytest.fixture
 def cat() -> Cat:
     return Cat(name="Micka")
 
-@pytest.fixture()
+@pytest.fixture
 def dog() -> Dog:
-    dog = Dog(name="Bud", breed=Breeds.LABRADOR)
+    dog = Dog(name="Max", breed=Breeds.LABRADOR)
     dog.teach_trick(Tricks.SHAKE_PAW)
     return dog
 
@@ -668,6 +702,7 @@ def dog() -> Dog:
     pytest.param(pytest.lazy_fixture("dog"), "haf", True, Food.BONE, id="Dog"),
 ])
 class TestAnimal:
+    ...
     def can_do_tricks(self, animal, food, sound, can_do_tricks):
         assert animal.can_do_tricks() == can_do_tricks
 ```
@@ -708,16 +743,29 @@ class BaseAnimalTest:
 
 # Abstraction as a mean of parametrisation
 
-```python {all|1,6|2-4|7-11|13-14}
+```python {all|1|5-7|2-3}
 class TestCat(BaseAnimalTest):
-    @pytest.fixture()
+    ANIMAL_SOUND = "mňau"
+    FAVOURITE_FOOD = Food.FISH
+  
+    @pytest.fixture
     def animal(self) -> Cat:
         return Cat(name="Micka")
-    
+```
+
+---
+
+# Abstraction as a mean of parametrisation
+
+```python {all|1|6-10|2-4|12-13}
 class TestDog(BaseAnimalTest):
-    @pytest.fixture()
+    ANIMAL_SOUND = "haf"
+    FAVOURITE_FOOD = Food.BONE
+    CAN_DO_TRICKS = True
+  
+    @pytest.fixture
     def animal(self) -> Dog:
-        dog = Dog(name="Bud", breed=Breeds.LABRADOR)
+        dog = Dog(name="Max", breed=Breeds.LABRADOR)
         dog.teach_trick(Tricks.SHAKE_PAW)
         return dog
 
@@ -782,3 +830,7 @@ class TestDog(BaseAnimalTest):
 - In the end, any tests is better than no tests
 
 </v-clicks>
+
+---
+
+# Questions?
