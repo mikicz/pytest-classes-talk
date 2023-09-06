@@ -578,7 +578,6 @@ class TestCatCreate:
     def test_create(self, db, api_client):
         response = api_client.post("/cat/", {"name": "Micka"})
         assert response.status_code == 201
-        # this will no longer work, becaue `cat` fixture scope is still active
         assert Cat.objects.get().name == "Micka"
 ```
 
@@ -698,8 +697,8 @@ def dog() -> Dog:
 
 @pytest.mark.parametrize("animal,sound,food,can_do_tricks", [
     # https://pypi.org/project/pytest-lazy-fixture/
-    pytest.param(pytest.lazy_fixture("cat"), "mňau", False, Food.FISH, id="Cat"),
-    pytest.param(pytest.lazy_fixture("dog"), "haf", True, Food.BONE, id="Dog"),
+    pytest.param(pytest.lazy_fixture("cat"), "mňau", Food.FISH, False, id="Cat"),
+    pytest.param(pytest.lazy_fixture("dog"), "haf", Food.BONE, True, id="Dog"),
 ])
 class TestAnimal:
     ...
