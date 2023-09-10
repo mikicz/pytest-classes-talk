@@ -346,7 +346,7 @@ With classes, as long as you don't just put all your fixtures in the same base c
 
 # So why do I think classes are better for tests?
 
-- Adhanced targetting and search
+- Enhanced targetting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -403,7 +403,7 @@ class TestA:
 
 # So why do I think classes are better for tests?
 
-- Adhanced targetting and search
+- Enhanced targetting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -585,7 +585,7 @@ class TestCatCreate:
 
 # So why do I think classes are better for tests?
 
-- Adhanced targetting and search
+- Enhanced targetting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -808,7 +808,7 @@ class TestDog(BaseAnimalTest):
 
 # So why do I think classes are better for tests?
 
-- Adhanced targetting and search
+- Enhanced targetting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -824,7 +824,7 @@ class TestDog(BaseAnimalTest):
 <v-clicks>
 
 - Consider all options pytest gives you
-- Using _can_ solve certain head-aches when writing classes at scale
+- Using _can_ solve certain headaches when writing classes at scale
 - There are many ways to accomplish the same thing
 - In the end, any tests is better than no tests
 
