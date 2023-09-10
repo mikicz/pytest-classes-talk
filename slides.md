@@ -475,14 +475,21 @@ class TestCat:
 
 # Fixture scope
 
+- Primary benefit of appropriate scope is speed
+
 <v-clicks>
 
-- Primary benefit of appropriate scope is speed
 - The slower a fixture is and the more tests use it, the bigger the benefit
 - Once created, fixture remains active until all tests in scope finish
   - Can lead to unexpected behaviour, if the fixture has a side-effect (like DB insert)
+  - Especially problematic with `autouse=True`
+
+
+- Using classes enables using `class`-scoped fixtures, where tests in scope are limited
+- In combination with `autouse=True` classes enhance posibilities of setup for a group of tests 
 
 </v-clicks>
+
 
 ---
 
@@ -493,14 +500,12 @@ class TestCat:
 def cat(db):
     return Cat.objects.create()  # insert into DB
 
-
 def test_cat_get_list(db, cat, api_client):
     response = api_client.get("/cat/")
     assert response.status_code == 200
     assert len(response.json()) == 1
     assert response.json()[0]["id"] == cat.id
 
-    
 def test_cat_create(db, api_client):
     response = api_client.post("/cat/", {"name": "Micka"})
     assert response.status_code == 201
@@ -511,11 +516,10 @@ def test_cat_create(db, api_client):
 
 # Fixture scope
 
-```python {1,16-17}
+```python {1,14-15}
 @pytest.fixture(scope="module")
 def cat(db):
     return Cat.objects.create()  # insert into DB
-
 
 def test_cat_get_list(db, cat, api_client):
     response = api_client.get("/cat/")
@@ -523,12 +527,15 @@ def test_cat_get_list(db, cat, api_client):
     assert len(response.json()) == 1
     assert response.json()[0]["id"] == cat.id
 
-
 def test_cat_create(db, api_client):
     response = api_client.post("/cat/", {"name": "Micka"})
     assert response.status_code == 201
     # this will no longer work, becaue `cat` fixture scope is still active
     assert Cat.objects.get().name == "Micka"
+```
+```text
+FAILED test_cat.py::test_cat_create 
+- Cat.MultipleObjectsReturned: get() returned more than one Cat -- it returned 2!
 ```
 
 <!--
@@ -544,25 +551,8 @@ fixture is in conftest.py, move to a different folder entirely.
 
 # Fixture scope
 
-- Primary benefit of appropriate scope is speed
-- The slower a fixture is and the more tests use it, the bigger the benefit
-- Once created, fixture remains active until all tests in scope finish
-  - Can lead to unexpected behaviour, if the fixture has a side-effect (like DB insert)
-  - Especiall problematic with `autouse=True`
-
-<v-clicks>
-
-- Using classes enables using `class`-scoped fixtures, where tests in scope are limited
-- In combination with `autouse=True` classes enhance posibilities of setup for a group of tests 
-
-</v-clicks>
-
----
-
-# Fixture scope
-
 ```python
-class TestCatList:
+class TestCatRetrieve:
     @pytest.fixture(scope="class")
     def cat(self, db):
         return Cat.objects.create()  # insert into DB
@@ -572,7 +562,10 @@ class TestCatList:
         assert response.status_code == 200
         assert len(response.json()) == 1
         assert response.json()[0]["id"] == cat.id
-
+    
+    def test_get_detail(self, cat, api_client):
+        response = api_client.get(f"/cat/{cat.id}")
+        ...
 
 class TestCatCreate:
     def test_create(self, db, api_client):
@@ -685,25 +678,25 @@ class TestAnimal:
 <v-click>
 
 ```python
-@pytest.fixture
-def cat() -> Cat:
-    return Cat(name="Micka")
-
-@pytest.fixture
-def dog() -> Dog:
-    dog = Dog(name="Max", breed=Breeds.LABRADOR)
-    dog.teach_trick(Tricks.SHAKE_PAW)
-    return dog
-
 @pytest.mark.parametrize("animal,sound,food,can_do_tricks", [
     # https://pypi.org/project/pytest-lazy-fixture/
     pytest.param(pytest.lazy_fixture("cat"), "mňau", Food.FISH, False, id="Cat"),
     pytest.param(pytest.lazy_fixture("dog"), "haf", Food.BONE, True, id="Dog"),
 ])
 class TestAnimal:
-    ...
-    def can_do_tricks(self, animal, food, sound, can_do_tricks):
+    @pytest.fixture
+    def cat(self) -> Cat:
+        return Cat(name="Micka")
+    
+    @pytest.fixture
+    def dog(self) -> Dog:
+        dog = Dog(name="Max", breed=Breeds.LABRADOR)
+        dog.teach_trick(Tricks.SHAKE_PAW)
+        return dog
+    
+    def test_can_do_tricks(self, animal, food, sound, can_do_tricks):
         assert animal.can_do_tricks() == can_do_tricks
+    ...
 ```
 
 </v-click>
@@ -732,7 +725,7 @@ class BaseAnimalTest:
     def test_favourite_food(self, animal):
         assert animal.favourite_food() == self.FAVOURITE_FOOD
 
-    def can_do_tricks(self, animal):
+    def test_can_do_tricks(self, animal):
         assert animal.can_do_tricks() == self.CAN_DO_TRICKS
 ```
 
@@ -751,6 +744,16 @@ class TestCat(BaseAnimalTest):
     def animal(self) -> Cat:
         return Cat(name="Micka")
 ```
+
+<v-click>
+
+```text
+test_cat.py::TestCat::test_sound PASSED           
+test_cat.py::TestCat::test_favourite_food PASSED  
+test_cat.py::TestCat::test_can_do_tricks PASSED   
+```
+
+</v-click>
 
 ---
 
@@ -771,6 +774,17 @@ class TestDog(BaseAnimalTest):
     def test_zoomies(self, animal):
         animal.zoom_around()
 ```
+
+<v-click>
+
+```text
+test_dog.py::TestDog::test_sound PASSED                 
+test_dog.py::TestDog::test_favourite_food PASSED        
+test_dog.py::TestDog::test_can_do_tricks PASSED         
+test_dog.py::TestDog::test_zoomies PASSED
+```
+
+</v-click>
 
 ---
 
