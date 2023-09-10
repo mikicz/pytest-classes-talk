@@ -104,40 +104,48 @@ class TestCat:
 
 ---
 
-# Targetting 
+# Another way of grouping tests
 
-By default, you can use the following targetting for running tests
+- Classes can serve to group tests in the same file
 
-```text
-pytest tests/test_cat.py::test_cat_meows
-       |     |            \
-       |     \             specific test
-       \      specific file
-        specific folder                   
-```
+<v-clicks>
+
+- Helps with orientiation within code
+- You can run just a specific class of tests
+
+</v-clicks>
 
 ---
 
 # Targetting
 
-With classes, that extends to being able to target a specific class
+<v-clicks>
 
 ```text
-pytest tests/test_cat.py::TestCat::test_meows
-       |     |            |        \
-       |     |            \         specific test
-       |     \             specific class
-       \      specific file
-        specific folder                   
+pytest                                          # run all tests
 ```
 
-<v-click>
+```text
+pytest tests/                                   # run tests in folder
+```
+```text
+pytest tests/test_cat.py                        # run tests in folder
+```
+```text
+pytest tests/test_cat.py::test_cat_meows        # run specific test
+```
+```text
+pytest tests/test_cat.py::TestCat               # run test class
+```
+```text
+pytest tests/test_cat.py::TestCat::test_moews   # run specific test in class
+```
 
-### Search
+```text
+pytest -k Cat                                   # all tests with Cat in ID
+```
 
-With classes, one can now also search by class name (`-k`)
-
-</v-click>
+</v-clicks>
 
 ---
 
@@ -228,13 +236,23 @@ class TestAnimal:
 - In pytest, fixtures can be shared between files by putting them in `conftest.py`
 - Fixtures in `conftest.py` are available to **all** tests in the folder and all subfolders
 
+---
+layout: two-cols
+---
+
+::default::
+
+# Fixture availability
+
 <v-click>
 
 ```python
 # tests/animals/test_cat.py
 
+
 def test_cat(cat):
     pass
+
 ```
 
 </v-click>
@@ -247,14 +265,17 @@ tests/
   animals/       
     conftest.py         priority 1
     test_cat.py         priority 0
+
 conftest.py             priority 3
 ```
 
 </v-click>
 
----
+::right::
 
-# Fixture availability
+# &nbsp;
+
+<v-click>
 
 ```python
 # tests/animals/test_cat.py
@@ -263,6 +284,8 @@ class TestCat:
     def test_cat(self, cat):
         pass
 ```
+
+</v-click>
 
 <v-click>
 
@@ -279,8 +302,37 @@ conftest.py             priority 4
 </v-click>
 
 ---
+layout: two-cols
+---
 
 # Class inheritance
+
+```python
+# tests/animals/test_cat.py
+
+
+class TestCat:
+    def test_cat(self, cat):
+        pass
+```
+
+```text {10} {lineNumbers: false}
+tests/
+  conftest.py           priority 3
+  animals/       
+    conftest.py         priority 2
+
+
+    test_cat.py         priority 1
+        TestCat         priority 0
+conftest.py             priority 4
+```
+
+::right::
+
+# &nbsp;
+
+<v-click>
 
 ```python
 # tests/animals/test_cat.py
@@ -291,18 +343,21 @@ class TestCat(BaseCatTest):
         pass
 ```
 
+</v-click>
+
+
 <v-click>
 
 ```text {0|8|6|7|4|2|9} {lineNumbers: false}
 tests/
-  conftest.py               priority 4
+  conftest.py           priority 4
   animals/       
-    conftest.py             priority 3
+    conftest.py         priority 3
     base_cat.py  
-        BaseCatTest         priority 1
-    test_cat.py             priority 2
-        TestCat             priority 0
-conftest.py                 priority 5
+        BaseCatTest     priority 1
+    test_cat.py         priority 2
+        TestCat         priority 0
+conftest.py             priority 5
 ```
 
 </v-click>

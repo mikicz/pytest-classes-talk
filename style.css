@@ -36,3 +36,8 @@ code {
   --purple: #D92398;
   --cyan: #0098FF;
 }
+
+
+.slidev-layout.two-columns {
+  --slidev-code-margin: 10px
+}
