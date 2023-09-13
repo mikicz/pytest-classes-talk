@@ -104,6 +104,10 @@ class TestCat:
         assert cat.make_sound() == "mňau"
 ```
 
+<!--
+The class needs to be called TestSomething for pytest to pick it up.
+-->
+
 ---
 
 # Another way of grouping tests
@@ -227,7 +231,7 @@ class TestAnimal:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targeting and search
+- Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
 
@@ -403,7 +407,7 @@ With classes, as long as you don't just put all your fixtures in the same base c
 
 # So why do I think classes are better for tests?
 
-- Enhanced targeting and search
+- Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -460,7 +464,7 @@ class TestA:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targeting and search
+- Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -573,16 +577,18 @@ def test_cat_create(db, api_client):
 
 # Fixture scope
 
-```python {1,14-15}
+```python {8-11|1,16-17}
 @pytest.fixture(scope="module")
 def cat(db):
     return Cat.objects.create()  # insert into DB
 
 def test_cat_get_list(db, cat, api_client):
-    response = api_client.get("/cat/")
+    ...  # same as before
+
+def test_cat_get_detail(db, cat, api_client):
+    response = api_client.get(f"/cat/{cat.id}")
     assert response.status_code == 200
-    assert len(response.json()) == 1
-    assert response.json()[0]["id"] == cat.id
+    ...
 
 def test_cat_create(db, api_client):
     response = api_client.post("/cat/", {"name": "Micka"})
@@ -590,10 +596,15 @@ def test_cat_create(db, api_client):
     # this will no longer work, becaue `cat` fixture scope is still active
     assert Cat.objects.get().name == "Micka"
 ```
+
+<div v-click="2">
+
 ```text
 FAILED test_cat.py::test_cat_create 
 - Cat.MultipleObjectsReturned: get() returned more than one Cat -- it returned 2!
 ```
+
+</div>
 
 <!--
 
@@ -617,11 +628,11 @@ class TestCatRetrieve:
     def test_get_list(self, cat, api_client):
         response = api_client.get("/cat/")
         assert response.status_code == 200
-        assert len(response.json()) == 1
-        assert response.json()[0]["id"] == cat.id
+        ...
     
     def test_get_detail(self, cat, api_client):
         response = api_client.get(f"/cat/{cat.id}")
+        assert response.status_code == 200
         ...
 
 class TestCatCreate:
@@ -635,7 +646,7 @@ class TestCatCreate:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targeting and search
+- Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -879,7 +890,7 @@ test_dog.py::TestDog::test_zoomies PASSED
 
 # So why do I think classes are better for tests?
 
-- Enhanced targeting and search
+- Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
