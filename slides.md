@@ -4,6 +4,8 @@ download: true
 theme: dracula
 highlighter: shiki
 favicon: '/favicon.png'
+fonts:
+  sans: "Barlow"
 ---
 
 # **Pytest: The Case for Using Classes**
