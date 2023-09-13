@@ -42,10 +42,14 @@ Mention all links & relevant details are on mikulaspoul, plus a blog and link to
 
 A beloved testing framework with several massive features
 
-<v-click>
+<v-clicks>
 
 - Minimal test setup
 - Simple asserts
+
+</v-clicks>
+
+<v-click>
 
 ```python
 def test_cat():
@@ -62,7 +66,6 @@ def test_cat():
 @pytest.fixture
 def cat() -> Cat:
     return Cat()
-
 
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
@@ -135,7 +138,7 @@ pytest                                          # run all tests
 pytest tests/                                   # run tests in folder
 ```
 ```text
-pytest tests/test_cat.py                        # run tests in folder
+pytest tests/test_cat.py                        # run tests in file
 ```
 ```text
 pytest tests/test_cat.py::test_cat_meows        # run specific test
@@ -158,12 +161,12 @@ pytest -k Cat                                   # all tests with Cat in ID
 # Compactness / Repetitiveness 1
 
 ```python
-@pytest.mark.some_mark
+@pytest.mark.skip_ci
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
 
 
-@pytest.mark.some_mark
+@pytest.mark.skip_ci
 def test_cat_likes_fish(cat):
     assert cat.favourite_food() == Food.FISH
 ```
@@ -174,7 +177,7 @@ Becomes
 
 ```python
 class TestCat:
-    pytestmark = pytest.mark.some_mark
+    pytestmark = pytest.mark.skip_ci
     
     def test_meows(self, cat):
         assert cat.make_sound() == "mňau"
@@ -184,6 +187,15 @@ class TestCat:
 ```
 
 </v-click>
+
+<!--
+
+Mention
+  - class name
+  - pytestmark
+  - not needing to repeat test_cat
+
+-->
 
 ---
 
@@ -265,7 +277,7 @@ def test_cat(cat):
 
 <v-click>
 
-```text {0|5|4|2|6} {lineNumbers: false}
+```text {0|5|4|2|7|8} {lineNumbers: false}
 tests/
   conftest.py           priority 2
   animals/       
@@ -880,8 +892,8 @@ test_dog.py::TestDog::test_zoomies PASSED
 - One base test class
   - 12 tests (list, create, validation, permissions, etc.)
   - 3 fixtures that need implementing (creating objects to comment on)
-  - 5 parameters with default values (number of queries on operation, etc.)
-  - 4 other parameters (class of object, foreign key name, urls, etc.) 
+  - 4 parameters (class of object, foreign key name, urls, etc.)
+  - 5 parameters with default values (number of queries on operation, etc.) 
 
 </v-clicks>
 
@@ -906,9 +918,9 @@ test_dog.py::TestDog::test_zoomies PASSED
 <v-clicks>
 
 - Consider all options pytest gives you
-- Using _can_ solve certain headaches when writing classes at scale
+- Using classes _can_ solve certain headaches when writing classes at scale
 - There are many ways to accomplish the same thing
-- In the end, any tests is better than no tests
+- In the end, any tests are better than no tests
 
 </v-clicks>
 
