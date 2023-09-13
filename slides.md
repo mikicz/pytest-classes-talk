@@ -13,6 +13,14 @@ fonts:
 ### a talk by Mikuláš Poul
 ### September 16, 2023 - PyCon CZ
 
+<!--
+
+This talk
+  - will try to showcase using classes in pytest and benefits
+  - teach you a bit about pytest
+
+-->
+
 ---
 
 # About me
@@ -58,7 +66,16 @@ def test_cat():
 
 </v-click>
 
-<v-click>
+
+<!--
+First ask who writes tests, who uses pytest, and who uses classes?
+-->
+
+---
+
+# Pytest
+
+A beloved testing framework with several massive features
 
 - Fixtures - reusable test setup
 
@@ -70,12 +87,6 @@ def cat() -> Cat:
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
 ```
-
-</v-click>
-
-<!--
-First ask who writes tests, who uses pytest, and who uses classes?
--->
 
 ---
 
@@ -110,6 +121,18 @@ class TestCat:
 <!--
 The class needs to be called TestSomething for pytest to pick it up.
 -->
+
+---
+layout: statement
+---
+
+# Benefits of using clases
+
+---
+layout: section
+---
+
+# Grouping tests
 
 ---
 
@@ -157,10 +180,21 @@ pytest -k Cat                                   # all tests with Cat in ID
 </v-clicks>
 
 ---
+layout: section
+---
+
+# More compact tests
+
+---
 
 # Compactness / Repetitiveness 1
 
 ```python
+@pytest.fixture
+def cat() -> Cat:
+    return Cat()
+
+
 @pytest.mark.skip_ci
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
@@ -171,22 +205,24 @@ def test_cat_likes_fish(cat):
     assert cat.favourite_food() == Food.FISH
 ```
 
-<v-click>
 
-Becomes
+---
+
+# Compactness / Repetitiveness 1
 
 ```python
+@pytest.mark.skip_ci
 class TestCat:
-    pytestmark = pytest.mark.skip_ci
-    
+    @pytest.fixture
+    def cat(self) -> Cat:
+        return Cat()
+  
     def test_meows(self, cat):
         assert cat.make_sound() == "mňau"
     
     def test_likes_fish(self, cat):
         assert cat.favourite_food() == Food.FISH
 ```
-
-</v-click>
 
 <!--
 
@@ -246,6 +282,12 @@ class TestAnimal:
 - Additional grouping choice 
 - Smaller code footprint
 - Reduced repetitions
+
+---
+layout: section
+---
+
+# Explicit fixture availability
 
 ---
 
@@ -426,6 +468,12 @@ With classes, as long as you don't just put all your fixtures in the same base c
 - Cleaner fixture namespace
 
 ---
+layout: section
+---
+
+# Safer auto-used fixtures
+
+---
 
 # Auto-used fixtures
 
@@ -438,9 +486,9 @@ def feature_flags(db):
     FeatureFlags.objects.update_or_create(defaults={"use_feature_a": True})
 ```
 
-<v-click>
+---
 
-### Fixture in class
+# Auto-used fixtures in class
 
 - Applies to current class instance
 
@@ -448,12 +496,8 @@ def feature_flags(db):
 class TestA:
     @pytest.fixture(autouse=True)
     def feature_flags(self, db):
-        FeatureFlags.objects.update_or_create(
-            defaults={"use_feature_a": True}
-        )
+        FeatureFlags.objects.update_or_create(defaults={"use_feature_a": True})
 ```
-
-</v-click>
 
 ---
 
@@ -484,6 +528,12 @@ class TestA:
 - Safer auto-use of fixtures
 
 ---
+layout: section
+---
+
+# Additional fixture scope
+
+---
 
 # Fixture scope
 
@@ -495,10 +545,8 @@ class TestA:
 def cat() -> Cat:
     return Cat()
 
-
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
-
     
 def test_cat_likes_fish(cat):
     assert cat.favourite_food() == Food.FISH
@@ -516,10 +564,8 @@ def test_cat_likes_fish(cat):
 def cat() -> Cat:
     return Cat()
 
-
 def test_cat_meows(cat):
     assert cat.make_sound() == "mňau"
-
 
 def test_cat_likes_fish(cat):
     assert cat.favourite_food() == Food.FISH
@@ -639,12 +685,10 @@ class TestCatRetrieve:
     
     def test_get_list(self, cat, api_client):
         response = api_client.get("/cat/")
-        assert response.status_code == 200
         ...
     
     def test_get_detail(self, cat, api_client):
         response = api_client.get(f"/cat/{cat.id}")
-        assert response.status_code == 200
         ...
 
 class TestCatCreate:
@@ -780,6 +824,12 @@ class TestAnimal:
 ```
 
 </v-click>
+
+---
+layout: section
+---
+
+# Abstract tests
 
 ---
 
