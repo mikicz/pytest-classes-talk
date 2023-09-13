@@ -117,7 +117,7 @@ class TestCat:
 
 ---
 
-# Targetting
+# Targeting
 
 <v-clicks>
 
@@ -225,7 +225,7 @@ class TestAnimal:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targetting and search
+- Enhanced targeting and search
 - Smaller code footprint
 - Reduced repetitions
 
@@ -401,7 +401,7 @@ With classes, as long as you don't just put all your fixtures in the same base c
 
 # So why do I think classes are better for tests?
 
-- Enhanced targetting and search
+- Enhanced targeting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -458,7 +458,7 @@ class TestA:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targetting and search
+- Enhanced targeting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -633,7 +633,7 @@ class TestCatCreate:
 
 # So why do I think classes are better for tests?
 
-- Enhanced targetting and search
+- Enhanced targeting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
@@ -877,7 +877,7 @@ test_dog.py::TestDog::test_zoomies PASSED
 
 # So why do I think classes are better for tests?
 
-- Enhanced targetting and search
+- Enhanced targeting and search
 - Smaller code footprint
 - Reduced repetitions
 - Explicit fixture availability
