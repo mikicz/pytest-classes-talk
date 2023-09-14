@@ -968,7 +968,7 @@ test_dog.py::TestDog::test_zoomies PASSED
 <v-clicks>
 
 - Consider all options pytest gives you
-- Using classes _can_ solve certain headaches when writing classes at scale
+- Using classes _can_ solve certain headaches when writing tests at scale
 - There are many ways to accomplish the same thing
 - In the end, any tests are better than no tests
 
