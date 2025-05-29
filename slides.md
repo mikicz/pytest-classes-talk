@@ -304,7 +304,21 @@ layout: two-cols
 
 # Fixture availability
 
-<v-click>
+```python
+# tests/animals/test_cat.py
+
+
+def test_cat(cat):
+    pass
+```
+
+---
+layout: two-cols
+---
+
+::default::
+
+# Fixture availability
 
 ```python
 # tests/animals/test_cat.py
@@ -312,14 +326,9 @@ layout: two-cols
 
 def test_cat(cat):
     pass
-
 ```
 
-</v-click>
-
-<v-click>
-
-```text {0|5|4|2|7|8} {lineNumbers: false}
+```text {0|5|4|2|7|8}{lines:false}
 tests/
   conftest.py           priority 2
   animals/       
@@ -329,13 +338,39 @@ tests/
 conftest.py             priority 3
 ```
 
-</v-click>
-
 ::right::
 
 # &nbsp;
 
-<v-click>
+---
+layout: two-cols
+---
+
+::default::
+
+# Fixture availability
+
+```python
+# tests/animals/test_cat.py
+
+
+def test_cat(cat):
+    pass
+```
+
+```text {0}{lines:false}
+tests/
+  conftest.py           priority 2
+  animals/       
+    conftest.py         priority 1
+    test_cat.py         priority 0
+
+conftest.py             priority 3
+```
+
+::right::
+
+# &nbsp;
 
 ```python
 # tests/animals/test_cat.py
@@ -345,11 +380,10 @@ class TestCat:
         pass
 ```
 
-</v-click>
 
 <v-click>
 
-```text {0|6|5|4|2|7} {lineNumbers: false}
+```text {0|6|5|4|2|7}{lines:false}
 tests/
   conftest.py           priority 3
   animals/       
@@ -376,7 +410,7 @@ class TestCat:
         pass
 ```
 
-```text {10} {lineNumbers: false}
+```text {10}{lines:false}
 tests/
   conftest.py           priority 3
   animals/       
@@ -408,7 +442,7 @@ class TestCat(BaseCatTest):
 
 <v-click>
 
-```text {0|8|6|7|4|2|9} {lineNumbers: false}
+```text {0|8|6|7|4|2|9}{lines:false}
 tests/
   conftest.py           priority 4
   animals/       
